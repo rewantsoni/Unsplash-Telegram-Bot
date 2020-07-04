@@ -1,0 +1,12 @@
+sudo: required
+language: go
+services:
+  - docker
+
+test:
+  - go get github.com/go-telegram-bot-api/telegram-bot-api
+
+after_success:
+  - docker build -t rewant/unsplash-bot .
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin
+  - docker push rewant/unsplash-bot
