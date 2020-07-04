@@ -1,0 +1,7 @@
+version: '3'
+services:
+  unsplash-bot:
+    restart: always
+    image: rewant/unsplash-bot
+    env_file:
+      - Unsplashbot.env

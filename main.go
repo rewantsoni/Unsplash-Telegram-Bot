@@ -14,12 +14,15 @@ func main() {
 //Creating the bot
 func createbot() {
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("API_TOKEN"))
+	if err!=nil{
+		fmt.Println(err.Error())
+	}
 	fmt.Println("Hello, I am " + bot.Self.FirstName)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates, err := bot.GetUpdatesChan(u)
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err.Error())
 	}
 	getUpdates(bot, updates)
 }
