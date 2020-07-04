@@ -14,7 +14,7 @@ func main() {
 //Creating the bot
 func createbot() {
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("API_TOKEN"))
-	if err!=nil{
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 	fmt.Println("Hello, I am " + bot.Self.FirstName)
@@ -33,12 +33,12 @@ func getUpdates(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 		go handleUpdate(bot, update)
 	}
 }
-func sendImage(bot *tgbotapi.BotAPI, d data, ChatID int64){
+func sendImage(bot *tgbotapi.BotAPI, d data, ChatID int64) {
 	req := newPhotoRequest(d)
 	res, err := getResponse(req)
 	if err != nil {
 		var msg tgbotapi.Chattable
-		if err.Error() =="couldn't find a image"{
+		if err.Error() == "couldn't find a image" {
 			msg = tgbotapi.NewMessage(ChatID, "Couldn't find a image for "+d.Query)
 		} else {
 			msg = tgbotapi.NewMessage(ChatID, err.Error())
@@ -53,7 +53,7 @@ func sendImage(bot *tgbotapi.BotAPI, d data, ChatID int64){
 		return
 	}
 	document := tgbotapi.NewDocumentShare(ChatID, res[0].Urls.Full)
-	document.Caption = "By " + res[0].User.FirstName + " " + res[0].User.LastName + "\n" + res[0].User.Links.Html
+	document.Caption = "By " + res[0].User.FirstName + " " + res[0].User.LastName + " On Unsplash\n" + res[0].User.Links.Html
 
 	document.ReplyMarkup = newInlineKeyboard(data{Query: d.Query, Random: d.Random})
 	_, err = bot.Send(document)
@@ -61,31 +61,32 @@ func sendImage(bot *tgbotapi.BotAPI, d data, ChatID int64){
 		panic(err.Error())
 	}
 }
+
 //Handling Updates
 func handleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 	var d data
 	if update.CallbackQuery != nil {
 		_ = json.Unmarshal([]byte(update.CallbackQuery.Data), &d)
 		sendImage(bot, d, update.CallbackQuery.Message.Chat.ID)
-		newCallbackConfig := tgbotapi.NewCallback(update.CallbackQuery.ID,"")
+		newCallbackConfig := tgbotapi.NewCallback(update.CallbackQuery.ID, "")
 		_, _ = bot.AnswerCallbackQuery(newCallbackConfig)
 		return
 	}
-	if update.Message == nil || update.Message.Text == ""{
+	if update.Message == nil || update.Message.Text == "" {
 		return
 	}
 	if update.Message.Chat.IsPrivate() {
 		if update.Message.IsCommand() {
 			switch update.Message.Command() {
 			case "random":
-				d.Random=true
+				d.Random = true
 			case "start":
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Welcome to Unsplash Bot")
 				bot.Send(msg)
 				return
 			}
 		} else {
-			d.Query=update.Message.Text
+			d.Query = update.Message.Text
 		}
 		sendImage(bot, d, update.Message.Chat.ID)
 	}
