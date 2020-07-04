@@ -81,7 +81,7 @@ func handleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 			case "random":
 				d.Random = true
 			case "start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Welcome to Unsplash Bot")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Welcome to"+bot.Self.FirstName+" "+bot.Self.LastName)
 				bot.Send(msg)
 				return
 			}
