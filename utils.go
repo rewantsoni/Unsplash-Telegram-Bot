@@ -46,6 +46,9 @@ func getResponse(req *http.Request) ([]response, error) {
 		return []response{}, errors.New("request failed")
 	}
 	data, err := ioutil.ReadAll(res.Body)
+	if string(data)=="Rate Limit Exceeded" {
+		return []response{}, errors.New("rate limit exceeded please try after sometime")
+	}
 	if err != nil {
 		return []response{}, errors.New("couldn't read response")
 	}

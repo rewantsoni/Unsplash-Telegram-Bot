@@ -5,6 +5,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -39,16 +40,16 @@ func sendImage(bot *tgbotapi.BotAPI, d data, ChatID int64) {
 	if err != nil {
 		var msg tgbotapi.Chattable
 		if err.Error() == "couldn't find a image" {
-			msg = tgbotapi.NewMessage(ChatID, "Couldn't find a image for "+d.Query)
+			msg = tgbotapi.NewMessage(ChatID, "Couldn't Find A Image For "+d.Query)
 		} else {
-			msg = tgbotapi.NewMessage(ChatID, err.Error())
+			msg = tgbotapi.NewMessage(ChatID, strings.Title(err.Error()))
 		}
 		bot.Send(msg)
 		return
 	}
 
 	if len(res) == 0 {
-		msg := tgbotapi.NewMessage(ChatID, "Couldn't find a image for "+d.Query)
+		msg := tgbotapi.NewMessage(ChatID, "Couldn't Find A Image For "+d.Query)
 		bot.Send(msg)
 		return
 	}
